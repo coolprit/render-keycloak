@@ -1,55 +1,28 @@
 services:
   - type: web
-    name: matomo
+    name: keycloak
     env: docker
-    plan: standard
-    # Recommended health check endpoint: https://matomo.org/faq/how-to/faq_20278/
-    healthCheckPath: /matomo.php
+    healthCheckPath: /status
     autoDeploy: false
-    disk:
-      name: matomo
-      mountPath: /var/www/html
-      sizeGB: 20
     envVars:
-      - key: MATOMO_DATABASE_HOST
-        fromService:
-          name: mysql-matomo
-          type: pserv
-          property: host
-      - key: MATOMO_DATABASE_USERNAME
-        fromService:
-          name: mysql-matomo
-          type: pserv
-          envVarKey: MYSQL_USER
-      - key: MATOMO_DATABASE_PASSWORD
-        fromService:
-          name: mysql-matomo
-          type: pserv
-          envVarKey: MYSQL_PASSWORD
-      - key: MATOMO_DATABASE_DBNAME
-        fromService:
-          name: mysql-matomo
-          type: pserv
-          envVarKey: MYSQL_DATABASE
+      - key: DB_NAME
+        fromDatabase:
+          name: etopo-kc-db
+          property: database
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: etopo-kc-db
+          property: password
+      - key: DB_USER
+        fromDatabase:
+          name: etopo-kc-db
+          property: user
+      - key: DB_CONNECTION_STRING
+        fromDatabase:
+          name: etopo-kc-db
+          property: connectionString
 
-  - type: pserv
-    name: mysql-matomo
-    repo: https://github.com/render-examples/mysql.git
-    env: docker
-    plan: standard
-    autoDeploy: false
-    disk:
-      name: mysql-matomo
-      mountPath: /var/lib/mysql
-      sizeGB: 20
-    envVars:
-      - key: MYSQL_DATABASE
-        value: mysql
-      - key: MYSQL_USER
-        value: mysql
-      - key: PORT
-        value: 3306
-      - key: MYSQL_PASSWORD
-        generateValue: true
-      - key: MYSQL_ROOT_PASSWORD
-        generateValue: true
+databases:
+  - name: goatcounter-postgres
+    databaseName: goatcounter
+    user: goatcounter
