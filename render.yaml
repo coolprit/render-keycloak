@@ -23,6 +23,6 @@ services:
           property: connectionString
 
 databases:
-  - name: goatcounter-postgres
-    databaseName: goatcounter
-    user: goatcounter
+  - name: etopo-kc-db
+    databaseName: etopo_kc_db
+    user: etopo_kc_db_user
